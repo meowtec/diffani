@@ -1,0 +1,10 @@
+.editor {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.codeEditor,
+.codeEditor > div {
+  height: 100%;
+}

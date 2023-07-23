@@ -1,0 +1,32 @@
+.export {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  border-radius: 36px;
+  padding: 0 12px;
+  overflow: hidden;
+  color: #ccc;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.exportIcon {
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.exportText {
+  min-width: 40px;
+}
+
+.progress {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: #fff;
+  mix-blend-mode: difference;
+}

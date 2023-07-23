@@ -1,0 +1,15 @@
+{
+  "files.associations": {
+    ".babelrc": "json",
+    ".eslintrc": "jsonc",
+    ".eslintrc*.json": "jsonc",
+    ".stylelintrc": "jsonc",
+    "stylelintrc": "jsonc",
+    ".prettierrc.json": "jsonc"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  }
+}

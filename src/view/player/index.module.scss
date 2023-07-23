@@ -1,0 +1,91 @@
+.player {
+  position: relative;
+  width: 640px;
+  height: 360px;
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    object-fit: contain;
+  }
+}
+
+.slider {
+  position: absolute;
+  appearance: none;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  background: none;
+  --bg-color: rgba(255, 255, 255, 0.2);
+
+  &::-webkit-slider-container {
+    padding-top: 6px;
+  }
+
+  &::-webkit-slider-runnable-track {
+    height: 2px;
+    background: var(--bg-color);
+    background-image: linear-gradient(
+      to right,
+      #28f calc(100% * var(--progress-rate, 100)),
+      transparent 0%
+    );
+    transition: all 0.2s ease-in-out;
+  }
+
+  &::-webkit-slider-thumb {
+    opacity: 0;
+    width: 8px;
+    height: 8px;
+    margin-top: -7px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  &:hover {
+    --bg-color: rgba(255, 255, 255, 0.6);
+
+    &::-webkit-slider-thumb {
+      opacity: 1;
+    }
+  }
+}
+
+.playButtonWrap {
+  position: relative;
+}
+
+.playButton {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  width: 36px;
+  height: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  background: none;
+  color: #fff;
+  border-radius: 36px;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background: #333;
+  }
+}
+
+.controls {
+  position: absolute;
+  right: 16px;
+}
+
+.playButton,
+.controls {
+  bottom: 16px;
+}

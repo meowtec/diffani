@@ -1,0 +1,272 @@
+[
+  {
+    "value": "function",
+    "types": [
+      "keyword"
+    ],
+    "index": 0,
+    "line": 0,
+    "col": 0
+  },
+  {
+    "value": " ",
+    "types": [],
+    "index": 8,
+    "line": 0,
+    "col": 8
+  },
+  {
+    "value": "foo",
+    "types": [
+      "function"
+    ],
+    "index": 9,
+    "line": 0,
+    "col": 9
+  },
+  {
+    "value": "(",
+    "types": [
+      "punctuation"
+    ],
+    "index": 12,
+    "line": 0,
+    "col": 12
+  },
+  {
+    "value": "param",
+    "types": [],
+    "index": 13,
+    "line": 0,
+    "col": 13
+  },
+  {
+    "value": ")",
+    "types": [
+      "punctuation"
+    ],
+    "index": 18,
+    "line": 0,
+    "col": 18
+  },
+  {
+    "value": " ",
+    "types": [],
+    "index": 19,
+    "line": 0,
+    "col": 19
+  },
+  {
+    "value": "{",
+    "types": [
+      "punctuation"
+    ],
+    "index": 20,
+    "line": 0,
+    "col": 20
+  },
+  {
+    "value": "\n  ",
+    "types": [],
+    "index": 21,
+    "line": 0,
+    "col": 21
+  },
+  {
+    "value": "/**\n   * ",
+    "types": [
+      "comment"
+    ],
+    "index": 24,
+    "line": 1,
+    "col": 3
+  },
+  {
+    "value": "multiline",
+    "types": [
+      "comment"
+    ],
+    "index": 33,
+    "line": 2,
+    "col": 6
+  },
+  {
+    "value": " ",
+    "types": [
+      "comment"
+    ],
+    "index": 42,
+    "line": 2,
+    "col": 15
+  },
+  {
+    "value": "comment",
+    "types": [
+      "comment"
+    ],
+    "index": 43,
+    "line": 2,
+    "col": 16
+  },
+  {
+    "value": "\n   */",
+    "types": [
+      "comment"
+    ],
+    "index": 50,
+    "line": 2,
+    "col": 23
+  },
+  {
+    "value": "\n  ",
+    "types": [],
+    "index": 56,
+    "line": 3,
+    "col": 6
+  },
+  {
+    "value": "return",
+    "types": [
+      "keyword"
+    ],
+    "index": 59,
+    "line": 4,
+    "col": 3
+  },
+  {
+    "value": " ",
+    "types": [],
+    "index": 65,
+    "line": 4,
+    "col": 9
+  },
+  {
+    "value": "param",
+    "types": [
+      "function"
+    ],
+    "index": 66,
+    "line": 4,
+    "col": 10
+  },
+  {
+    "value": "(",
+    "types": [
+      "punctuation"
+    ],
+    "index": 71,
+    "line": 4,
+    "col": 15
+  },
+  {
+    "value": "true",
+    "types": [
+      "boolean"
+    ],
+    "index": 72,
+    "line": 4,
+    "col": 16
+  },
+  {
+    "value": ",",
+    "types": [
+      "punctuation"
+    ],
+    "index": 76,
+    "line": 4,
+    "col": 20
+  },
+  {
+    "value": " ",
+    "types": [],
+    "index": 77,
+    "line": 4,
+    "col": 21
+  },
+  {
+    "value": "[",
+    "types": [
+      "punctuation"
+    ],
+    "index": 78,
+    "line": 4,
+    "col": 22
+  },
+  {
+    "value": "1",
+    "types": [
+      "number"
+    ],
+    "index": 79,
+    "line": 4,
+    "col": 23
+  },
+  {
+    "value": ",",
+    "types": [
+      "punctuation"
+    ],
+    "index": 80,
+    "line": 4,
+    "col": 24
+  },
+  {
+    "value": " ",
+    "types": [],
+    "index": 81,
+    "line": 4,
+    "col": 25
+  },
+  {
+    "value": "2",
+    "types": [
+      "number"
+    ],
+    "index": 82,
+    "line": 4,
+    "col": 26
+  },
+  {
+    "value": "]",
+    "types": [
+      "punctuation"
+    ],
+    "index": 83,
+    "line": 4,
+    "col": 27
+  },
+  {
+    "value": ")",
+    "types": [
+      "punctuation"
+    ],
+    "index": 84,
+    "line": 4,
+    "col": 28
+  },
+  {
+    "value": ";",
+    "types": [
+      "punctuation"
+    ],
+    "index": 85,
+    "line": 4,
+    "col": 29
+  },
+  {
+    "value": "\n",
+    "types": [],
+    "index": 86,
+    "line": 4,
+    "col": 30
+  },
+  {
+    "value": "}",
+    "types": [
+      "punctuation"
+    ],
+    "index": 87,
+    "line": 5,
+    "col": 1
+  }
+]

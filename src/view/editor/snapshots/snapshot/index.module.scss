@@ -1,0 +1,80 @@
+.snapshotWrapper {
+  position: relative;
+}
+
+.snapshot {
+  border: 0;
+  padding: 0;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+  overflow: hidden;
+  margin: 12px 8px;
+  font-size: 16px;
+  font-weight: 500;
+  background: none;
+  color: #999;
+
+  transition: all 0.4s ease-in-out;
+  cursor: pointer;
+
+  &:hover,
+  &.active {
+    color: #fff;
+  }
+
+  &:hover:not(.active) {
+    background: #fff;
+    color: #333;
+
+    .progress {
+      opacity: 0;
+    }
+  }
+
+  .progress {
+    opacity: 0.1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    background: #fff;
+    mix-blend-mode: difference;
+  }
+
+  &.active {
+    font-weight: bold;
+
+    .progress {
+      opacity: 1;
+    }
+  }
+}
+
+.delete {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 20px;
+  transform: translate(-20px, 20px);
+  opacity: 0;
+  transition: all 0.4s ease-in-out;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.snapshotWrapper:hover .delete {
+  opacity: 1;
+  transform: translate(0, 0);
+}
