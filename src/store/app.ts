@@ -33,7 +33,7 @@ export const initialState: AppSliceState = {
     snapshots: [
       {
         id: '1',
-        duration: 5000,
+        duration: 3000,
         transitionTime: 1000,
         code: dedent`
           export function Demo({ active }) {
@@ -49,7 +49,7 @@ export const initialState: AppSliceState = {
       },
       {
         id: '2',
-        duration: 5000,
+        duration: 3000,
         transitionTime: 1000,
         code: dedent`
           import clsx from 'clsx'
@@ -66,7 +66,7 @@ export const initialState: AppSliceState = {
       },
       {
         id: '3',
-        duration: 5000,
+        duration: 3000,
         transitionTime: 1000,
         code: dedent`
           import clsx from 'clsx'

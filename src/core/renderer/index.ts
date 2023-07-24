@@ -376,7 +376,7 @@ export class MovieRenderer {
       ctx.fillStyle = '#fff';
       ctx.textAlign = 'center';
       ctx.fillText(
-        'Made with DIFFANI.co',
+        'Made with diffani.co',
         (doc.raw.width / 2) * this.ratio,
         (doc.raw.height / 2) * this.ratio
       );
