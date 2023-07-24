@@ -20,7 +20,7 @@ export function VideoExport() {
     } else if (encodeState.status === EncodeStatus.Encoding) {
       abortEncodeTask();
     } else if (encodeState.status === EncodeStatus.Done) {
-      downloadBlob(encodeState.result, 'video.mp4');
+      downloadBlob(encodeState.result, `video-${Date.now()}.webm`);
       abortEncodeTask();
     }
   };

@@ -32,7 +32,7 @@ export class VideoEncoder {
   }
 
   private get frameRate() {
-    return this.options.frameRate ?? 30;
+    return this.options.frameRate ?? 60;
   }
 
   private get frameCount() {

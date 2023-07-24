@@ -1,9 +1,11 @@
-import styles from './app.module.scss';
+import { useCallback } from 'react';
 import Editor from './view/editor/index';
 import Player from './view/player';
 import { useStore } from './store';
-import { useCallback } from 'react';
 import { getSnapshotAtTime } from './core/doc/raw-doc';
+import styles from './app.module.scss';
+import githubIcon from './assets/icons/github.svg';
+import Icon from './view/icon';
 
 export default function App() {
   const { doc, currentTime, updateSnapshot } = useStore((state) => ({
@@ -17,7 +19,6 @@ export default function App() {
     currentTime
   );
   const currentSnapShot = doc.snapshots[currentSnapshotIndex];
-  console.log('currentSnapshotIndex', currentSnapshotIndex);
   const handleCodeUpdate = useCallback(
     (code: string) => {
       updateSnapshot(currentSnapshotIndex, {
@@ -29,17 +30,32 @@ export default function App() {
   );
 
   return (
-    <div className={styles.layout}>
-      <div className={styles.editorWrapper}>
-        <Editor
-          currentSnapshotIndex={currentSnapshotIndex}
-          currentSnapshotOffset={currentSnapshotOffset}
-          doc={doc}
-          onCodeUpdate={handleCodeUpdate}
-        />
-      </div>
-      <div className={styles.playerWrapper}>
-        <Player currentTime={currentTime} doc={doc} />
+    <div>
+      <header className={styles.header}>
+        <span className={styles.logo}>diffani.co</span>
+        <a
+          href="https://github.com/meowtec/diffani"
+          target="_blank"
+          rel="noreferrer"
+          className={styles.githubLink}
+        >
+          <Icon name={githubIcon} />
+        </a>
+      </header>
+      <div className={styles.layout}>
+        <div className={styles.editorWrapper}>
+          <h2 className={styles.title}>Edit</h2>
+          <Editor
+            currentSnapshotIndex={currentSnapshotIndex}
+            currentSnapshotOffset={currentSnapshotOffset}
+            doc={doc}
+            onCodeUpdate={handleCodeUpdate}
+          />
+        </div>
+        <div className={styles.playerWrapper}>
+          <h2 className={styles.title}>Preview</h2>
+          <Player currentTime={currentTime} doc={doc} />
+        </div>
       </div>
     </div>
   );
