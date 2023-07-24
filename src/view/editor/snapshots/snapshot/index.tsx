@@ -6,13 +6,19 @@ import styles from './index.module.scss';
 import Icon from '../../../icon';
 
 interface SnapshotProps {
+  deletable: boolean;
   index: number;
   active: boolean;
   progress: number;
   snapshot: DocSnapshot;
 }
 
-export function Snapshot({ index, progress, active }: SnapshotProps) {
+export function Snapshot({
+  deletable,
+  index,
+  progress,
+  active,
+}: SnapshotProps) {
   const { gotoSnapshot, deleteSnapshot, playing } = useStore((state) => ({
     playing: state.playing,
     gotoSnapshot: state.gotoSnapshot,
@@ -37,16 +43,18 @@ export function Snapshot({ index, progress, active }: SnapshotProps) {
         #{index}
       </button>
 
-      <button
-        type="button"
-        className={styles.delete}
-        title="delete"
-        onClick={() => {
-          deleteSnapshot(index);
-        }}
-      >
-        <Icon name={iconMinus} />
-      </button>
+      {deletable && (
+        <button
+          type="button"
+          className={styles.delete}
+          title="delete"
+          onClick={() => {
+            deleteSnapshot(index);
+          }}
+        >
+          <Icon name={iconMinus} />
+        </button>
+      )}
     </div>
   );
 }

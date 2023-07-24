@@ -26,6 +26,7 @@ export default function Snapshots({
       {snapshots.map((snapshot, index) => (
         <Snapshot
           key={snapshot.id}
+          deletable={snapshots.length > 1}
           index={index}
           active={index === currentSnapshotIndex}
           snapshot={snapshot}
