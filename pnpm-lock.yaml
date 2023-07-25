@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
+  '@codemirror/commands':
+    specifier: ^6.2.4
+    version: 6.2.4
   '@codemirror/lang-cpp':
     specifier: ^6.0.2
     version: 6.0.2

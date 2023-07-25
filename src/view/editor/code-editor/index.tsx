@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { minimalSetup } from 'codemirror';
 import { EditorState, Compartment } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
+import { EditorView, keymap } from '@codemirror/view';
+import { indentWithTab } from '@codemirror/commands';
 import { oneDarkTheme } from '@codemirror/theme-one-dark';
 import { assertNonNull } from '../../../utils/assert';
 import {
@@ -65,6 +66,7 @@ export default function CodeEditor({
           minimalSetup,
           theme,
           oneDarkTheme,
+          keymap.of([indentWithTab]),
           extensionsCompartment.of([]),
         ],
       }),
