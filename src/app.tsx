@@ -35,7 +35,7 @@ export default function App() {
   return (
     <div>
       <header className={styles.header}>
-        <span className={styles.logo}>diffani.co</span>
+        <span className={styles.logo}>diffani</span>
         <a
           href="https://github.com/meowtec/diffani"
           target="_blank"
