@@ -37,7 +37,7 @@ const DEFAULT_TRANSITION_CONFIG: TransitionConfig = {
  */
 export function computeTransitionState(
   progress: number,
-  config: TransitionConfig = DEFAULT_TRANSITION_CONFIG
+  config: TransitionConfig = DEFAULT_TRANSITION_CONFIG,
 ): TransitionState {
   const MOVE_START_PROPORTION =
     (1 - config.outDurationProportion - config.inDurationProportion) / 2 +
@@ -51,10 +51,10 @@ export function computeTransitionState(
     outProgress: clampProgressAndEase(progress / config.outDurationProportion),
     inProgress: clampProgressAndEase(
       (progress - (1 - config.inDurationProportion)) /
-        config.inDurationProportion
+        config.inDurationProportion,
     ),
     moveProgress: clampProgressAndEase(
-      (progress - MOVE_START_PROPORTION) / config.moveDurationProportion
+      (progress - MOVE_START_PROPORTION) / config.moveDurationProportion,
     ),
   };
 }
@@ -66,7 +66,7 @@ export function applyTransition(progress: number, from: number, to: number) {
 export function applyPositionTransition(
   progress: number,
   from: Position,
-  to: Position
+  to: Position,
 ): Position {
   return {
     x: applyTransition(progress, from.x, to.x),

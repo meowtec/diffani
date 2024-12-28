@@ -15,7 +15,7 @@ describe('tokenize', () => {
     const tokens = parseCodeToFormattedTokens(code, Language.typescript);
 
     await expect(JSON.stringify(tokens, null, '  ')).toMatchFileSnapshot(
-      './snapshots/parse-code-0.json'
+      './snapshots/parse-code-0.json',
     );
 
     let restoreCode = '';

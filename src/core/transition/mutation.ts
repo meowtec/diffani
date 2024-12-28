@@ -37,14 +37,14 @@ export function createMutation(left: Token[], right: Token[]): MovMutation {
 
   for (const group of diffResult) {
     const count = group.count ?? 0;
-    const existedInLeft = group.added == null;
-    const existedInRight = group.removed == null;
+    const existedInLeft = !group.added;
+    const existedInRight = !group.removed;
 
     diffs.push(
       ...group.value.map((token, idx) => ({
         leftIndex: existedInLeft ? leftIndex + idx : null,
         rightIndex: existedInRight ? rightIndex + idx : null,
-      }))
+      })),
     );
 
     if (existedInLeft) {

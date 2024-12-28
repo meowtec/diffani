@@ -116,7 +116,7 @@ export class MovieRenderer {
     if (
       !isOffsetTimeInTransition(
         doc.raw.snapshots[snapshotIndex1],
-        offsetTime1
+        offsetTime1,
       ) &&
       !isOffsetTimeInTransition(doc.raw.snapshots[snapshotIndex2], offsetTime2)
     ) {

@@ -7,9 +7,7 @@ export interface BaseToken {
   value: string;
   types: string[];
 }
-export interface Token extends BaseToken {
-  invisible: boolean;
-}
+export type Token = BaseToken;
 
 /**
  * Recursive map prism tokens tree to a flat token array
@@ -20,7 +18,7 @@ export interface Token extends BaseToken {
  */
 function flattenPrismTokens(
   tokens: TokenStream,
-  types?: string[]
+  types?: string[],
 ): BaseToken[] {
   if (Array.isArray(tokens)) {
     return tokens.flatMap((token) => flattenPrismTokens(token, types));
@@ -76,7 +74,6 @@ function processTokensWithAttrs(baseTokens: BaseToken[]) {
       tokens.push({
         ...token,
         value: subToken,
-        invisible: isSpaces(subToken),
       });
     }
   }
@@ -86,7 +83,7 @@ function processTokensWithAttrs(baseTokens: BaseToken[]) {
 
 export function parseCodeToFormattedTokens(code: string, language: Language) {
   const baseTokens = flattenPrismTokens(
-    Prism.tokenize(code, Prism.languages[language])
+    Prism.tokenize(code, Prism.languages[language]),
   );
 
   return processTokensWithAttrs(baseTokens);
@@ -97,5 +94,5 @@ export function isTokenSpaces(token: Token) {
 }
 
 export const memoizedParseCodeToFormattedTokens = memoize(256)(
-  parseCodeToFormattedTokens
+  parseCodeToFormattedTokens,
 );

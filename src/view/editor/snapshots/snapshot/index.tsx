@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { useShallow } from 'zustand/shallow';
 import { type DocSnapshot } from '../../../../core/doc/raw-doc';
 import { useStore } from '../../../../store';
 import iconMinus from '../../../../assets/icons/minus.svg';
@@ -19,11 +20,13 @@ export function Snapshot({
   progress,
   active,
 }: SnapshotProps) {
-  const { gotoSnapshot, deleteSnapshot, playing } = useStore((state) => ({
-    playing: state.playing,
-    gotoSnapshot: state.gotoSnapshot,
-    deleteSnapshot: state.deleteSnapshot,
-  }));
+  const { gotoSnapshot, deleteSnapshot, playing } = useStore(
+    useShallow((state) => ({
+      playing: state.playing,
+      gotoSnapshot: state.gotoSnapshot,
+      deleteSnapshot: state.deleteSnapshot,
+    })),
+  );
 
   return (
     <div className={styles.snapshotWrapper}>

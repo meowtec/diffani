@@ -106,55 +106,55 @@ describe('transition', () => {
 
   it('transition calculation', () => {
     expect(
-      roundTransition(computeTransitionState(0, transitionConfig))
+      roundTransition(computeTransitionState(0, transitionConfig)),
     ).toEqual({
       outProgress: 0,
       inProgress: 0,
       moveProgress: 0,
     });
     expect(
-      roundTransition(computeTransitionState(0.1, transitionConfig))
+      roundTransition(computeTransitionState(0.1, transitionConfig)),
     ).toEqual(
       roundTransition({
         outProgress: 1 / 3,
         inProgress: 0,
         moveProgress: 0,
-      })
+      }),
     );
     expect(
-      roundTransition(computeTransitionState(0.2, transitionConfig))
+      roundTransition(computeTransitionState(0.2, transitionConfig)),
     ).toEqual(
       roundTransition({
         outProgress: 2 / 3,
         inProgress: 0,
         moveProgress: 0,
-      })
+      }),
     );
     expect(
-      roundTransition(computeTransitionState(0.3, transitionConfig))
+      roundTransition(computeTransitionState(0.3, transitionConfig)),
     ).toEqual(
       roundTransition({
         outProgress: 1,
         inProgress: 0,
         moveProgress: 1 / 4,
-      })
+      }),
     );
     expect(
-      roundTransition(computeTransitionState(0.5, transitionConfig))
+      roundTransition(computeTransitionState(0.5, transitionConfig)),
     ).toEqual({
       outProgress: 1,
       inProgress: 0,
       moveProgress: 3 / 4,
     });
     expect(
-      roundTransition(computeTransitionState(0.6, transitionConfig))
+      roundTransition(computeTransitionState(0.6, transitionConfig)),
     ).toEqual({
       outProgress: 1,
       inProgress: 1 / 5,
       moveProgress: 1,
     });
     expect(
-      roundTransition(computeTransitionState(0.7, transitionConfig))
+      roundTransition(computeTransitionState(0.7, transitionConfig)),
     ).toEqual({
       outProgress: 1,
       inProgress: 2 / 5,

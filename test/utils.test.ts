@@ -5,8 +5,8 @@ describe('utils', () => {
   it('checkSafeForMonospaceFont', () => {
     expect(
       checkSafeForMonospaceFont(
-        '1234567890 -=`~qwertyuiop[]asdfghjkl;\'zxcvbnm,./|{}":?><!@#$%^&*()_+'
-      )
+        '1234567890 -=`~qwertyuiop[]asdfghjkl;\'zxcvbnm,./|{}":?><!@#$%^&*()_+',
+      ),
     ).toBe(true);
 
     expect(checkSafeForMonospaceFont('汉')).toBe(false);

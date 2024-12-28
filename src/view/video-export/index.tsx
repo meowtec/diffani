@@ -1,3 +1,4 @@
+import { useShallow } from 'zustand/shallow';
 import { useStore } from '../../store';
 import downloadIcon from '../../assets/icons/download.svg';
 import Icon from '../icon';
@@ -7,11 +8,11 @@ import styles from './index.module.scss';
 
 export function VideoExport() {
   const { encodeState, startEncodeTask, abortEncodeTask } = useStore(
-    (state) => ({
+    useShallow((state) => ({
       encodeState: state.encodeState,
       startEncodeTask: state.startEncodeTask,
       abortEncodeTask: state.abortEncodeTask,
-    })
+    })),
   );
 
   const handleClick = () => {
@@ -29,8 +30,8 @@ export function VideoExport() {
     encodeState?.status === EncodeStatus.Encoding
       ? encodeState.progress
       : encodeState?.status === EncodeStatus.Done
-      ? 1
-      : 0;
+        ? 1
+        : 0;
 
   const progressPercent = `${Math.round(progress * 100)}%`;
 
@@ -49,10 +50,10 @@ export function VideoExport() {
         {encodeState == null
           ? 'Export'
           : encodeState.status === EncodeStatus.Done
-          ? 'Save'
-          : encodeState.status === EncodeStatus.Encoding
-          ? progressPercent
-          : 'Re-Export'}
+            ? 'Save'
+            : encodeState.status === EncodeStatus.Encoding
+              ? progressPercent
+              : 'Re-Export'}
       </span>
 
       <span

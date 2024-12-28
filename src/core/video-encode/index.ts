@@ -19,7 +19,7 @@ export class VideoEncoder {
 
   constructor(
     private readonly doc: RawDoc,
-    private readonly options: VideoEncodeOptions = {}
+    private readonly options: VideoEncodeOptions = {},
   ) {
     const canvas = document.createElement('canvas');
     const renderer = new MovieRenderer(canvas, 1);
@@ -55,7 +55,7 @@ export class VideoEncoder {
       const currentFrameTime = this.frameDuration * frame;
       const shouldReRender = renderer.shouldReRender(
         prevFrameTime,
-        currentFrameTime
+        currentFrameTime,
       );
 
       if (shouldReRender) {

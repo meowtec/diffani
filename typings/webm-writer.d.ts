@@ -15,7 +15,7 @@ declare module 'webm-writer' {
 
     addFrame(
       frame: HTMLCanvasElement | HTMLImageElement | OffscreenCanvas,
-      duration?: number
+      duration?: number,
     ): void;
 
     complete(): Promise<Blob>;

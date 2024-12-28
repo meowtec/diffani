@@ -29,7 +29,7 @@ const theme = EditorView.theme(
   },
   {
     dark: true,
-  }
+  },
 );
 const extensionsCompartment = new Compartment();
 
@@ -53,7 +53,7 @@ export default function CodeEditor({
           onChange(newValue);
         }
       }),
-    [onChange]
+    [onChange],
   );
 
   // create editor

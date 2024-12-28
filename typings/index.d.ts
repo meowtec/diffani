@@ -4,7 +4,6 @@ declare module '*.svg' {
 }
 
 interface Window {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   hljs: typeof import('highlight.js').default;
 }
 

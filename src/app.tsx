@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useShallow } from 'zustand/shallow';
 import Editor from './view/editor/index';
 import Player from './view/player';
 import { useStore } from './store';
@@ -8,15 +9,17 @@ import githubIcon from './assets/icons/github.svg';
 import Icon from './view/icon';
 
 export default function App() {
-  const { doc, currentTime, updateSnapshot } = useStore((state) => ({
-    doc: state.doc,
-    currentTime: state.currentTime,
-    updateSnapshot: state.updateSnapshot,
-  }));
+  const { doc, currentTime, updateSnapshot } = useStore(
+    useShallow((state) => ({
+      doc: state.doc,
+      currentTime: state.currentTime,
+      updateSnapshot: state.updateSnapshot,
+    })),
+  );
 
   const [currentSnapshotIndex, currentSnapshotOffset] = getSnapshotAtTime(
     doc,
-    currentTime
+    currentTime,
   );
   const currentSnapShot = doc.snapshots[currentSnapshotIndex];
   const handleCodeUpdate = useCallback(
@@ -26,7 +29,7 @@ export default function App() {
         code,
       });
     },
-    [currentSnapShot, currentSnapshotIndex, updateSnapshot]
+    [currentSnapShot, currentSnapshotIndex, updateSnapshot],
   );
 
   return (

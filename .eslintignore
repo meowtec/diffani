@@ -1,5 +1,0 @@
-.eslintrc.cjs
-*.config.cjs
-*.config.mjs
-*.d.ts
-dist

@@ -35,7 +35,7 @@ export default function Snapshots({
               currentSnapshotIndex -
               index,
             0,
-            1
+            1,
           )}
         />
       ))}

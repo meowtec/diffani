@@ -31,7 +31,7 @@ export interface RawDoc {
 
 export function getSnapshotAtTime(
   movie: Pick<RawDoc, 'snapshots'>,
-  time: number
+  time: number,
 ): [snapshotIndex: number, offsetTime: number] {
   const { snapshots } = movie;
   let startTime = 0;
@@ -58,7 +58,7 @@ export function getSnapshotAtTime(
  */
 export function isOffsetTimeInTransition(
   snapshot: DocSnapshot,
-  offsetTime: number
+  offsetTime: number,
 ) {
   return offsetTime > snapshot.duration - snapshot.transitionTime;
 }

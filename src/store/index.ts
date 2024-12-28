@@ -26,8 +26,8 @@ export function createStore() {
           currentTime: 0,
           playing: false,
         }),
-      }
-    )
+      },
+    ),
   );
 
   /**
@@ -51,4 +51,6 @@ export function createStore() {
 
 export const useStore = createStore();
 
-(window as any).__useStore = useStore;
+Object.assign(window, {
+  __useStore: useStore,
+});

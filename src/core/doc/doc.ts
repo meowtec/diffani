@@ -25,7 +25,7 @@ export function createDoc(raw: RawDoc): Doc {
   }));
 
   const transitions = createArray(snapshots.length - 1, (index) =>
-    createMutation(snapshots[index].tokens, snapshots[index + 1].tokens)
+    createMutation(snapshots[index].tokens, snapshots[index + 1].tokens),
   );
 
   return {

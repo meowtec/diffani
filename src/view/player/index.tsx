@@ -1,4 +1,5 @@
 import { type CSSProperties, useEffect, useMemo, useRef } from 'react';
+import { useShallow } from 'zustand/shallow';
 import { getSumDuration, type RawDoc } from '../../core/doc/raw-doc';
 import { MovieRenderer } from '../../core/renderer';
 import { useStore } from '../../store';
@@ -14,11 +15,13 @@ interface PlayerProps {
 }
 
 export default function Player({ currentTime, doc }: PlayerProps) {
-  const { setCurrentTime, setPlaying, playing } = useStore((state) => ({
-    setCurrentTime: state.setCurrentTime,
-    setPlaying: state.setPlaying,
-    playing: state.playing,
-  }));
+  const { setCurrentTime, setPlaying, playing } = useStore(
+    useShallow((state) => ({
+      setCurrentTime: state.setCurrentTime,
+      setPlaying: state.setPlaying,
+      playing: state.playing,
+    })),
+  );
 
   const duration = useMemo(() => getSumDuration(doc), [doc]);
 
@@ -28,7 +31,10 @@ export default function Player({ currentTime, doc }: PlayerProps) {
   useEffect(() => {
     const renderer = new MovieRenderer(canvasRef.current as HTMLCanvasElement);
     rendererRef.current = renderer;
-    (window as any).__renderer = renderer;
+
+    Object.assign(window, {
+      __renderer: renderer,
+    });
   }, []);
 
   useEffect(() => {

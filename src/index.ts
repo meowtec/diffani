@@ -6,5 +6,5 @@ import App from './app';
 
 inject();
 createRoot(document.querySelector('#root') as HTMLElement).render(
-  React.createElement(App)
+  React.createElement(App),
 );
