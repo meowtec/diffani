@@ -1,3 +1,11 @@
+import {
+  Application,
+  BitmapFontManager,
+  TextStyle,
+  Text,
+  type TextStyleOptions,
+  Container,
+} from 'pixi.js';
 import { easeQuadInOut } from 'd3-ease';
 import { assert } from '../../utils/assert';
 import { type Doc, createDoc } from '../doc/doc';
@@ -6,22 +14,26 @@ import {
   getSnapshotAtTime,
   isOffsetTimeInTransition,
 } from '../doc/raw-doc';
-import { type Token } from '../tokenize/index';
 import {
   applyPositionTransition,
   applyTransition,
   computeTransitionState,
 } from '../transition/transition';
-import { getFontProperty } from './utils';
 import { checkSafeForMonospaceFont, getLastLine } from '../../utils/string';
 import { type Position } from '../../types/base';
 import { Theme } from '../theme/index';
 import { clamp01 } from '../../utils/number';
+import { type Token } from '../tokenize';
 
 const ASSERT_DOC_MSG =
   'renderer.doc is empty, make sure call setDoc before render';
+
 export class MovieRenderer {
-  private readonly ctx: CanvasRenderingContext2D;
+  private readonly app: Application;
+
+  public readonly readyPromise: Promise<void>;
+
+  public ready = false;
 
   private doc?: Doc;
   /**
@@ -29,18 +41,33 @@ export class MovieRenderer {
    */
   private tokenPositionsList: Position[][] = [];
 
+  private cachedTexts: Text[][] = [];
+
+  private readonly finalText = this.createFinalText();
+
+  private readonly textsContainer = new Container();
+
+  private _theme: Theme | null = null;
+
   currentTime = -1;
 
-  constructor(
-    public readonly canvas: HTMLCanvasElement,
-    public readonly ratio = 0.5
-  ) {
-    const ctx = canvas.getContext('2d');
-    if (ctx == null) {
-      throw new Error('Failed to get canvas context');
-    }
+  constructor(public readonly canvas: HTMLCanvasElement) {
+    this.app = new Application();
+    this.readyPromise = this.init();
+  }
 
-    this.ctx = ctx;
+  async init() {
+    this.app.stage.addChild(this.textsContainer, this.finalText);
+
+    await this.app.init({
+      background: '#000',
+      canvas: this.canvas,
+      webgl: {
+        preserveDrawingBuffer: true,
+      },
+      antialias: true,
+    });
+    this.ready = true;
   }
 
   setDoc(rawDoc: RawDoc) {
@@ -48,8 +75,12 @@ export class MovieRenderer {
     this.doc = createDoc(rawDoc);
     this.tokenPositionsList = [];
     this.currentTime = -1;
-    this.canvas.width = rawDoc.width * this.ratio;
-    this.canvas.height = rawDoc.height * this.ratio;
+    this.cachedTexts = [];
+    this._theme = null;
+
+    void this.readyPromise.then(() => {
+      this.app.renderer.resize(rawDoc.width, rawDoc.height);
+    });
   }
 
   /**
@@ -58,7 +89,7 @@ export class MovieRenderer {
    * @returns
    */
   render(time: number) {
-    const { doc, currentTime } = this;
+    const { doc, currentTime, app } = this;
 
     assert(doc, ASSERT_DOC_MSG);
 
@@ -83,13 +114,21 @@ export class MovieRenderer {
     } else {
       this.renderStatic(snapshotIndex);
     }
+
+    if (this.ready) {
+      app.render();
+    }
   }
 
   private get theme() {
-    const { doc } = this;
+    const { doc, _theme } = this;
     assert(doc, ASSERT_DOC_MSG);
+    if (_theme) return _theme;
 
-    return Theme.getTheme(doc.raw.theme);
+    const theme = Theme.getTheme(doc.raw.theme);
+    this._theme = theme;
+
+    return theme;
   }
 
   /**
@@ -135,23 +174,21 @@ export class MovieRenderer {
 
   /**
    * Measure all tokens of a snapshot and calculate their basic positions
-   * If a token is invisible, will return null
-   * Else return it's x and y
    * @param snapshotIndex
    */
   private measureTokenPositions(snapshotIndex: number): Position[] {
-    const { doc, ctx, theme } = this;
+    const { doc } = this;
     assert(doc, ASSERT_DOC_MSG);
 
     const { snapshots, raw: rawDoc } = doc;
 
     const snapshotView = snapshots[snapshotIndex];
-    ctx.font = getFontProperty({
-      fontSize: rawDoc.fontSize,
-      fontFace: theme.data.fontFace,
-    });
 
-    const monospaceCharWidth = ctx.measureText('X').width;
+    const textStyle = new TextStyle(this.getBaseTextStyle());
+
+    const textSize = BitmapFontManager.measureText('X', textStyle);
+
+    const monospaceCharWidth = textSize.width * textSize.scale;
 
     const positions: Position[] = [];
     let x = 0;
@@ -164,7 +201,7 @@ export class MovieRenderer {
 
       if (text.length === 0) return 0;
 
-      return ctx.measureText(text).width;
+      return BitmapFontManager.measureText(text, textStyle).width;
     };
 
     for (const token of snapshotView.tokens) {
@@ -182,61 +219,6 @@ export class MovieRenderer {
     }
 
     return positions;
-  }
-
-  private wrapRender(fn: (doc: Doc) => void) {
-    const { ctx, doc, theme } = this;
-    assert(doc, ASSERT_DOC_MSG);
-
-    const { raw: rawDoc } = doc;
-    ctx.clearRect(0, 0, rawDoc.width * this.ratio, rawDoc.height * this.ratio);
-    ctx.fillStyle = theme.data.backgroundColor;
-    ctx.fillRect(0, 0, rawDoc.width * this.ratio, rawDoc.height * this.ratio);
-    ctx.font = getFontProperty({
-      fontSize: rawDoc.fontSize * this.ratio,
-      fontFace: theme.data.fontFace,
-    });
-    ctx.fillStyle = theme.data.color;
-    ctx.textBaseline = 'middle';
-
-    fn(doc);
-  }
-
-  private drawToken(
-    token: Token,
-    position: Position,
-    doc: Doc,
-    opacity: number,
-    globalOffset: Position = { x: 0, y: 0 }
-  ) {
-    const { ctx, theme } = this;
-    const { raw: rawDoc } = doc;
-
-    ctx.save();
-
-    const tokenStyle = theme.getTypesStyle(token.types);
-
-    if (tokenStyle.color) {
-      ctx.fillStyle = tokenStyle.color;
-    }
-
-    ctx.globalAlpha = (tokenStyle.opacity ?? 1) * opacity;
-
-    ctx.font = getFontProperty({
-      ...tokenStyle,
-      fontFace: theme.data.fontFace,
-      fontSize: rawDoc.fontSize * this.ratio,
-    });
-
-    if (!token.invisible) {
-      ctx.fillText(
-        token.value,
-        (globalOffset.x + position.x) * this.ratio,
-        (globalOffset.y + position.y + rawDoc.lineHeight / 2) * this.ratio
-      );
-    }
-
-    ctx.restore();
   }
 
   private computeScrollPosition(snapshotIndex: number) {
@@ -260,6 +242,55 @@ export class MovieRenderer {
     };
   }
 
+  private getBaseTextStyle(): Partial<TextStyleOptions> {
+    const { theme, doc } = this;
+    assert(doc, ASSERT_DOC_MSG);
+    const {
+      raw: { fontSize },
+    } = doc;
+
+    return {
+      fontSize,
+      fontFamily: theme.data.fontFace,
+    };
+  }
+
+  private createText(token: Token, snapshotIndex: number, tokenIndex: number) {
+    const snapshotTexts = (this.cachedTexts[snapshotIndex] ||= []);
+    if (snapshotTexts[tokenIndex]) {
+      return snapshotTexts[tokenIndex];
+    }
+    const { theme, doc } = this;
+    assert(doc, ASSERT_DOC_MSG);
+    const tokenStyle = theme.getTypesStyle(token.types);
+
+    const textStyle = this.getBaseTextStyle();
+
+    const text = new Text({
+      text: token.value,
+      style: {
+        ...textStyle,
+        fill: tokenStyle.color ?? '#fff',
+      },
+    });
+
+    snapshotTexts[tokenIndex] = text;
+
+    return text;
+  }
+
+  createFinalText() {
+    const text = new Text({
+      text: 'Made with diffani',
+      style: {
+        fill: '#fff',
+        align: 'center',
+      },
+    });
+    text.alpha = 0;
+    return text;
+  }
+
   private baseRenderStatic(snapshotIndex: number, doc: Doc, globalAlpha = 1) {
     const {
       snapshots,
@@ -269,118 +300,111 @@ export class MovieRenderer {
 
     const positions = this.getTokenPositions(snapshotIndex);
     const { tokens } = snapshots[snapshotIndex];
-    this.ctx.translate(
-      padding.left * this.ratio,
-      (padding.top - minScrollTop) * this.ratio
-    );
+
+    this.finalText.alpha = 0;
+    this.textsContainer.removeChildren();
+
+    this.textsContainer.alpha = globalAlpha;
+    this.textsContainer.x = padding.left;
+    this.textsContainer.y = padding.top - minScrollTop;
 
     for (let i = 0; i < tokens.length; i++) {
       const token = tokens[i];
       const position = positions[i];
-      this.drawToken(token, position, doc, globalAlpha);
+      const text = this.createText(token, snapshotIndex, i);
+      text.x = position.x;
+      text.y = position.y;
+      this.textsContainer.addChild(text);
     }
-
-    this.ctx.resetTransform();
   }
 
   private renderStatic(snapshotIndex: number) {
-    this.wrapRender((doc) => {
-      this.baseRenderStatic(snapshotIndex, doc);
-    });
+    const { doc } = this;
+    assert(doc, ASSERT_DOC_MSG);
+    this.baseRenderStatic(snapshotIndex, doc);
   }
 
   private renderTransition(leftSnapshotIndex: number, progress: number) {
     const rightSnapshotIndex = leftSnapshotIndex + 1;
-    this.wrapRender((doc) => {
-      const {
-        raw: { padding },
-      } = doc;
-      const transitionState = computeTransitionState(progress);
-      const { minScrollTop: leftMinScrollTop } =
-        this.computeScrollPosition(leftSnapshotIndex);
-      const { minScrollTop: rightMinScrollTop } =
-        this.computeScrollPosition(rightSnapshotIndex);
+    const { doc, finalText } = this;
+    assert(doc, ASSERT_DOC_MSG);
 
-      this.ctx.translate(
-        padding.left * this.ratio,
-        (padding.top -
-          applyTransition(progress, leftMinScrollTop, rightMinScrollTop)) *
-          this.ratio
-      );
+    const {
+      raw: { padding },
+    } = doc;
+    const transitionState = computeTransitionState(progress);
+    const { minScrollTop: leftMinScrollTop } =
+      this.computeScrollPosition(leftSnapshotIndex);
+    const { minScrollTop: rightMinScrollTop } =
+      this.computeScrollPosition(rightSnapshotIndex);
 
-      const mutation = doc.transitions[leftSnapshotIndex];
-      const { left, right, diffs } = mutation;
+    finalText.alpha = 0;
+    this.textsContainer.removeChildren();
 
-      for (const { leftIndex, rightIndex } of diffs) {
-        if (leftIndex == null) {
-          assert(
-            rightIndex,
-            'leftIndex and rightIndex cannot be null at same time'
-          );
-          // add
-          const token = right[rightIndex];
-          const position =
-            this.getTokenPositions(rightSnapshotIndex)[rightIndex];
-          this.drawToken(
-            token,
-            position,
-            doc,
-            applyTransition(transitionState.inProgress, 0, 1)
-          );
-        } else if (rightIndex == null) {
-          // delete
-          const token = left[leftIndex];
-          const position = this.getTokenPositions(leftSnapshotIndex)[leftIndex];
-          this.drawToken(
-            token,
-            position,
-            doc,
-            applyTransition(transitionState.outProgress, 1, 0)
-          );
-        } else {
-          // move
-          const leftToken = left[leftIndex];
-          const leftPosition =
-            this.getTokenPositions(leftSnapshotIndex)[leftIndex];
-          const rightPosition =
-            this.getTokenPositions(rightSnapshotIndex)[rightIndex];
+    this.textsContainer.x = padding.left;
+    this.textsContainer.y =
+      padding.top -
+      applyTransition(progress, leftMinScrollTop, rightMinScrollTop);
 
-          this.drawToken(
-            leftToken,
-            applyPositionTransition(
-              transitionState.moveProgress,
-              leftPosition,
-              rightPosition
-            ),
-            doc,
-            1
-          );
-        }
+    const mutation = doc.transitions[leftSnapshotIndex];
+    const { left, right, diffs } = mutation;
+
+    for (const { leftIndex, rightIndex } of diffs) {
+      if (leftIndex == null) {
+        assert(
+          rightIndex,
+          'leftIndex and rightIndex cannot be null at same time',
+        );
+        // add
+        const token = right[rightIndex];
+        const position = this.getTokenPositions(rightSnapshotIndex)[rightIndex];
+        const text = this.createText(token, rightSnapshotIndex, rightIndex);
+        text.x = position.x;
+        text.y = position.y;
+        text.alpha = applyTransition(transitionState.inProgress, 0, 1);
+        this.textsContainer.addChild(text);
+      } else if (rightIndex == null) {
+        // delete
+        const token = left[leftIndex];
+        const position = this.getTokenPositions(leftSnapshotIndex)[leftIndex];
+        const text = this.createText(token, leftSnapshotIndex, leftIndex);
+        text.x = position.x;
+        text.y = position.y;
+        text.alpha = applyTransition(transitionState.outProgress, 1, 0);
+        this.textsContainer.addChild(text);
+      } else {
+        // move
+        const leftToken = left[leftIndex];
+        const leftPosition =
+          this.getTokenPositions(leftSnapshotIndex)[leftIndex];
+        const rightPosition =
+          this.getTokenPositions(rightSnapshotIndex)[rightIndex];
+
+        const text = this.createText(leftToken, leftSnapshotIndex, leftIndex);
+        const position = applyPositionTransition(
+          transitionState.moveProgress,
+          leftPosition,
+          rightPosition,
+        );
+        text.x = position.x;
+        text.y = position.y;
+        text.alpha = 1;
+        this.textsContainer.addChild(text);
       }
-
-      this.ctx.resetTransform();
-    });
+    }
   }
 
   private renderFinalTransition(leftSnapshotIndex: number, progress: number) {
-    this.wrapRender((doc) => {
-      const { ctx } = this;
-      this.baseRenderStatic(
-        leftSnapshotIndex,
-        doc,
-        easeQuadInOut(clamp01(1 - progress * 2))
-      );
-
-      ctx.save();
-      ctx.globalAlpha = easeQuadInOut(progress);
-      ctx.fillStyle = '#fff';
-      ctx.textAlign = 'center';
-      ctx.fillText(
-        'Made with diffani.co',
-        (doc.raw.width / 2) * this.ratio,
-        (doc.raw.height / 2) * this.ratio
-      );
-      ctx.restore();
-    });
+    const { doc, finalText } = this;
+    assert(doc, ASSERT_DOC_MSG);
+    this.baseRenderStatic(
+      leftSnapshotIndex,
+      doc,
+      easeQuadInOut(clamp01(1 - progress * 2)),
+    );
+    finalText.y = doc.raw.height / 2;
+    finalText.x = doc.raw.width / 2 - finalText.width / 2;
+    finalText.alpha = easeQuadInOut(progress);
+    Object.assign(finalText.style, this.getBaseTextStyle());
   }
 }

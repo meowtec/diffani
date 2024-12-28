@@ -22,7 +22,7 @@ export class VideoEncoder {
     private readonly options: VideoEncodeOptions = {},
   ) {
     const canvas = document.createElement('canvas');
-    const renderer = new MovieRenderer(canvas, 1);
+    const renderer = new MovieRenderer(canvas);
 
     renderer.setDoc(doc);
 
@@ -68,6 +68,7 @@ export class VideoEncoder {
 
   async encode(): Promise<Blob> {
     const { renderer, frameCount, frameDuration, dedupeFrames } = this;
+    await renderer.readyPromise;
     const { onProgress } = this.options;
     const writer = new WebMWriter({
       quality: 0.9,

@@ -59,8 +59,13 @@ export function computeTransitionState(
   };
 }
 
-export function applyTransition(progress: number, from: number, to: number) {
-  return from + (to - from) * progress;
+export function applyTransition(
+  progress: number,
+  from: number,
+  to: number,
+  ease = easeQuadInOut,
+) {
+  return from + (to - from) * ease(progress);
 }
 
 export function applyPositionTransition(
